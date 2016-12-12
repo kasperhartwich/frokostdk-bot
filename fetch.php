@@ -17,13 +17,19 @@ $weekdays = [
 ];
 
 if ($weekday<6) {
-
-    $file = file_get_contents('http://wrap.edev.frokost.dk/cater/'.$cater);
+    $url = "https://www.frokost.dk/frokostordning/koebenhavn/$cater/";
+    $file = file_get_contents($url);
     $html = new simple_html_dom();
     $html->load($file);
 
+    $menu = null;
     foreach($html->find("div[class=weekMenu] div div[id=" . $weekdays[$weekday]. "]") as $tr) {
         $menu = $tr->innertext();
+    }
+
+    if (!trim(strip_tags($menu))) {
+        echo "No menu found\n";
+        exit;
     }
 
     $headers  = 'MIME-Version: 1.0' . "\r\n";
